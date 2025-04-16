@@ -7,7 +7,7 @@ interface PlantSelectorProps {
 }
 
 const PLANT_TYPES = [
-  { value: "", label: "Select a plant type" },
+  { value: "placeholder", label: "Select a plant type" },
   { value: "tomato", label: "Tomato" },
   { value: "potato", label: "Potato" },
   { value: "bell_pepper", label: "Bell Pepper" },
@@ -26,7 +26,18 @@ const PlantSelector = ({ onPlantChange, value }: PlantSelectorProps) => {
       <label className="block text-sm font-medium text-gray-700 mb-2">
         Select plant type
       </label>
-      <Select value={value} onValueChange={onPlantChange}>
+      <Select 
+        value={value || undefined} 
+        onValueChange={(val) => {
+          // Don't pass the placeholder value to the parent component
+          if (val !== "placeholder") {
+            onPlantChange(val);
+          } else {
+            // If placeholder is selected, effectively clear the selection
+            onPlantChange("");
+          }
+        }}
+      >
         <SelectTrigger className="w-full bg-white border-input">
           <SelectValue placeholder="Select a plant type" />
         </SelectTrigger>
