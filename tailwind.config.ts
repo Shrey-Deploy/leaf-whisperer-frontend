@@ -61,7 +61,19 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+                // Plant Diagnoser custom colors
+                'plant-green': {
+                    DEFAULT: '#4CAF50',
+                    light: '#E6EED6',
+                    dark: '#2E7D32'
+                },
+                'plant-earth': {
+                    DEFAULT: '#A67C52',
+                    light: '#FBF2EA',
+                    dark: '#795548'
+                },
+                'plant-background': '#F9F9F7'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
