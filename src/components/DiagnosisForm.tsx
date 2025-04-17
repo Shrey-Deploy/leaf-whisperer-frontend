@@ -1,8 +1,6 @@
-
 import { useState } from "react";
 import ImageUploader from "./ImageUploader";
 import PlantSelector from "./PlantSelector";
-import ResultDisplay from "./ResultDisplay";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
@@ -25,6 +23,10 @@ const DiagnosisForm = () => {
   const handlePlantChange = (plant: string) => {
     setPlantType(plant);
     setResult(null);
+  };
+
+  const translateDisease = (disease: string) => {
+    return t(`diseases.${disease.toLowerCase()}`) || t('diseases.unknown');
   };
 
   const handleSubmit = async () => {
@@ -62,20 +64,24 @@ const DiagnosisForm = () => {
       }
 
       const data = await response.json();
-      setResult(data);
+      const translatedData = {
+        ...data,
+        class: translateDisease(data.class)
+      };
+      setResult(translatedData);
       
       toast({
         title: t('diagnosis.results'),
         description: data.class === "healthy" 
-          ? t('diagnosis.healthy')
-          : `${t('diagnosis.results')}: ${data.class}`,
+          ? t('diseases.healthy')
+          : `${t('diagnosis.results')}: ${translateDisease(data.class)}`,
         variant: data.class === "healthy" ? "default" : "destructive",
       });
       
     } catch (error) {
       toast({
         title: "Error",
-        description: "An error occurred while analyzing your plant. Please try again.",
+        description: t('diagnosis.error'),
         variant: "destructive",
       });
       setResult(null);
@@ -112,19 +118,19 @@ const DiagnosisForm = () => {
             <div className="bg-card rounded-lg border p-4">
               <dl className="space-y-4">
                 <div>
-                  <dt className="text-sm font-medium text-muted-foreground">Plant Type</dt>
+                  <dt className="text-sm font-medium text-muted-foreground">{t('diagnosis.plantType')}</dt>
                   <dd className="text-base">{result.plant}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-muted-foreground">Diagnosis</dt>
+                  <dt className="text-sm font-medium text-muted-foreground">{t('diagnosis.diagnosis')}</dt>
                   <dd className={`text-base font-medium ${
-                    result.class === "healthy" ? "text-green-600" : "text-red-600"
+                    result.class === t('diseases.healthy') ? "text-green-600" : "text-red-600"
                   }`}>
                     {result.class}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-muted-foreground">Confidence</dt>
+                  <dt className="text-sm font-medium text-muted-foreground">{t('diagnosis.confidence')}</dt>
                   <dd className="text-base">{(result.confidence * 100).toFixed(2)}%</dd>
                 </div>
               </dl>
