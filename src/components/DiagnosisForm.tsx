@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import ImageUploader from "./ImageUploader";
 import PlantSelector from "./PlantSelector";
@@ -6,17 +7,13 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "@/hooks/useTranslations";
+import { PredictionResult } from "@/types/diagnosis";
 
 const DiagnosisForm = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [plantType, setPlantType] = useState("");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{
-    disease: string | null;
-    confidence?: number;
-    healthy: boolean;
-    recommendations?: string[];
-  } | null>(null);
+  const [result, setResult] = useState<PredictionResult | null>(null);
   const { toast } = useToast();
   const { t } = useTranslations();
 
@@ -52,53 +49,27 @@ const DiagnosisForm = () => {
     setLoading(true);
     
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      
-      const simulatedResponses = [
-        {
-          disease: "Early Blight",
-          confidence: 0.89,
-          healthy: false,
-          recommendations: [
-            "Remove and destroy infected leaves",
-            "Apply fungicide according to package directions",
-            "Ensure proper spacing for air circulation",
-            "Water at the base of plants to avoid wetting leaves"
-          ]
-        },
-        {
-          disease: "Late Blight",
-          confidence: 0.76,
-          healthy: false,
-          recommendations: [
-            "Remove and destroy all infected plant parts",
-            "Apply copper-based fungicide",
-            "Avoid overhead irrigation",
-            "Maintain good drainage in the field"
-          ]
-        },
-        {
-          disease: null,
-          confidence: 0.95,
-          healthy: true,
-          recommendations: [
-            "Continue regular watering and fertilizing schedule",
-            "Monitor for any changes in leaf appearance",
-            "Maintain good air circulation around plants"
-          ]
-        }
-      ];
-      
-      const mockResult = simulatedResponses[Math.floor(Math.random() * simulatedResponses.length)];
-      
-      setResult(mockResult);
+      const formData = new FormData();
+      formData.append('file', selectedImage);
+
+      const response = await fetch(`http://localhost:8000/predict?plant=${plantType}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      setResult(data);
       
       toast({
         title: t('diagnosis.results'),
-        description: mockResult.healthy 
+        description: data.class === "healthy" 
           ? t('diagnosis.healthy')
-          : `${t('diagnosis.results')}: ${mockResult.disease}`,
-        variant: mockResult.healthy ? "default" : "destructive",
+          : `${t('diagnosis.results')}: ${data.class}`,
+        variant: data.class === "healthy" ? "default" : "destructive",
       });
       
     } catch (error) {
@@ -107,6 +78,7 @@ const DiagnosisForm = () => {
         description: "An error occurred while analyzing your plant. Please try again.",
         variant: "destructive",
       });
+      setResult(null);
     } finally {
       setLoading(false);
     }
@@ -134,10 +106,31 @@ const DiagnosisForm = () => {
           )}
         </Button>
         
-        <div className="mt-6">
-          <h2 className="text-lg font-medium mb-3">{t('diagnosis.results')}</h2>
-          <ResultDisplay loading={loading} result={result} />
-        </div>
+        {result && (
+          <div className="mt-6 space-y-4">
+            <h2 className="text-lg font-medium">{t('diagnosis.results')}</h2>
+            <div className="bg-card rounded-lg border p-4">
+              <dl className="space-y-4">
+                <div>
+                  <dt className="text-sm font-medium text-muted-foreground">Plant Type</dt>
+                  <dd className="text-base">{result.plant}</dd>
+                </div>
+                <div>
+                  <dt className="text-sm font-medium text-muted-foreground">Diagnosis</dt>
+                  <dd className={`text-base font-medium ${
+                    result.class === "healthy" ? "text-green-600" : "text-red-600"
+                  }`}>
+                    {result.class}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-sm font-medium text-muted-foreground">Confidence</dt>
+                  <dd className="text-base">{(result.confidence * 100).toFixed(2)}%</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
