@@ -1,8 +1,11 @@
 
 import DiagnosisForm from "@/components/DiagnosisForm";
 import { Leaf } from "lucide-react";
+import { useTranslations } from "@/hooks/useTranslations";
 
 const Index = () => {
+  const { t } = useTranslations();
+
   return (
     <div className="min-h-screen bg-plant-background">
       <header className="border-b border-border">
@@ -13,12 +16,10 @@ const Index = () => {
           </div>
           <div>
             <a 
-              href="https://github.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
+              href="/about" 
               className="text-sm text-gray-600 hover:text-plant-green"
             >
-              About
+              {t('nav.about')}
             </a>
           </div>
         </div>
@@ -28,11 +29,10 @@ const Index = () => {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10">
             <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">
-              Diagnose Plant Diseases with AI
+              {t('home.title')}
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Upload a photo of your plant leaf and get instant diagnosis. 
-              Our tool helps farmers identify diseases early and take appropriate action.
+              {t('home.subtitle')}
             </p>
           </div>
           
@@ -41,9 +41,7 @@ const Index = () => {
           </div>
           
           <div className="mt-12 text-center text-sm text-gray-500">
-            <p>
-              For educational purposes only. Results should be verified by agricultural experts.
-            </p>
+            <p>{t('home.disclaimer')}</p>
           </div>
         </div>
       </main>
@@ -53,12 +51,12 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row items-center justify-between">
             <div className="flex items-center space-x-1 mb-4 sm:mb-0">
               <Leaf className="h-4 w-4 text-plant-green" />
-              <span className="text-sm text-gray-600">Plant Diagnoser &copy; 2025</span>
+              <span className="text-sm text-gray-600">{t('home.footer.rights')}</span>
             </div>
             <div className="flex space-x-6">
-              <a href="#" className="text-sm text-gray-600 hover:text-plant-green">Privacy Policy</a>
-              <a href="#" className="text-sm text-gray-600 hover:text-plant-green">Terms of Service</a>
-              <a href="#" className="text-sm text-gray-600 hover:text-plant-green">Contact</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-plant-green">{t('home.footer.privacy')}</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-plant-green">{t('home.footer.terms')}</a>
+              <a href="#" className="text-sm text-gray-600 hover:text-plant-green">{t('home.footer.contact')}</a>
             </div>
           </div>
         </div>
@@ -68,3 +66,4 @@ const Index = () => {
 };
 
 export default Index;
+

@@ -1,5 +1,6 @@
 
-import { Check, AlertTriangle, Leaf } from "lucide-react";
+import { Check, AlertTriangle } from "lucide-react";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface ResultDisplayProps {
   loading: boolean;
@@ -12,6 +13,8 @@ interface ResultDisplayProps {
 }
 
 const ResultDisplay = ({ loading, result }: ResultDisplayProps) => {
+  const { t } = useTranslations();
+
   if (loading) {
     return (
       <div className="result-card">
@@ -26,7 +29,7 @@ const ResultDisplay = ({ loading, result }: ResultDisplayProps) => {
               </div>
             </div>
           </div>
-          <p className="mt-4 text-gray-600">Analyzing your plant...</p>
+          <p className="mt-4 text-gray-600">{t('diagnosis.analyzing')}</p>
         </div>
       </div>
     );
@@ -36,9 +39,9 @@ const ResultDisplay = ({ loading, result }: ResultDisplayProps) => {
     return (
       <div className="result-card bg-plant-background border-dashed">
         <div className="flex flex-col items-center justify-center py-10">
-          <Leaf className="h-12 w-12 text-plant-green mb-3" />
+          <AlertTriangle className="h-12 w-12 text-plant-green mb-3" />
           <p className="text-gray-600 text-center">
-            Your diagnosis results will appear here after uploading an image and selecting a plant type.
+            {t('diagnosis.dropzoneText')}
           </p>
         </div>
       </div>
@@ -61,18 +64,18 @@ const ResultDisplay = ({ loading, result }: ResultDisplayProps) => {
         </div>
         <div>
           <h3 className="text-lg font-medium">
-            {result.healthy ? "Plant appears healthy" : result.disease}
+            {result.healthy ? t('diagnosis.healthy') : result.disease}
           </h3>
           
           {result.confidence !== undefined && (
             <p className="text-sm text-gray-500 mt-1">
-              Confidence: {Math.round(result.confidence * 100)}%
+              {t('diagnosis.confidence')}: {Math.round(result.confidence * 100)}%
             </p>
           )}
           
           {result.recommendations && result.recommendations.length > 0 && (
             <div className="mt-4">
-              <h4 className="text-sm font-medium mb-2">Recommendations:</h4>
+              <h4 className="text-sm font-medium mb-2">{t('diagnosis.recommendations')}:</h4>
               <ul className="text-sm space-y-1">
                 {result.recommendations.map((rec, index) => (
                   <li key={index} className="flex items-start gap-2">
@@ -90,3 +93,4 @@ const ResultDisplay = ({ loading, result }: ResultDisplayProps) => {
 };
 
 export default ResultDisplay;
+

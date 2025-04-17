@@ -1,7 +1,10 @@
 
 import { Leaf, Sun, Cloud, Sprout } from "lucide-react";
+import { useTranslations } from "@/hooks/useTranslations";
 
 const About = () => {
+  const { t } = useTranslations();
+
   return (
     <div className="min-h-screen bg-plant-background">
       <div className="container mx-auto py-12 px-4 sm:px-6">
@@ -9,10 +12,10 @@ const About = () => {
           {/* Hero Section */}
           <section className="text-center animate-fade-in">
             <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-              Empowering Farmers Through Technology
+              {t('about.title')}
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Plant Diagnoser helps farmers identify and treat plant diseases using advanced AI technology.
+              {t('about.subtitle')}
             </p>
           </section>
 
@@ -21,23 +24,23 @@ const About = () => {
             {[
               {
                 icon: Leaf,
-                title: "Quick Disease Detection",
-                description: "Upload a photo of your plant leaf and get instant analysis of potential diseases."
+                titleKey: 'about.features.detection.title',
+                descriptionKey: 'about.features.detection.description'
               },
               {
                 icon: Sun,
-                title: "Treatment Recommendations",
-                description: "Receive detailed guidance on how to treat identified plant diseases effectively."
+                titleKey: 'about.features.treatment.title',
+                descriptionKey: 'about.features.treatment.description'
               },
               {
                 icon: Cloud,
-                title: "Weather-Aware Advice",
-                description: "Get recommendations that take into account local weather conditions and seasons."
+                titleKey: 'about.features.weather.title',
+                descriptionKey: 'about.features.weather.description'
               },
               {
                 icon: Sprout,
-                title: "Multiple Crop Support",
-                description: "Supporting a wide range of crops including tomatoes, potatoes, rice, and more."
+                titleKey: 'about.features.crops.title',
+                descriptionKey: 'about.features.crops.description'
               }
             ].map((feature, index) => (
               <div
@@ -46,22 +49,17 @@ const About = () => {
                 style={{ animationDelay: `${index * 150}ms` }}
               >
                 <feature.icon className="h-12 w-12 text-plant-green mb-4" />
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <h3 className="text-xl font-semibold mb-2">{t(feature.titleKey)}</h3>
+                <p className="text-gray-600">{t(feature.descriptionKey)}</p>
               </div>
             ))}
           </div>
 
           {/* How It Works Section */}
           <section className="animate-fade-in">
-            <h2 className="text-3xl font-bold text-center mb-8">How It Works</h2>
+            <h2 className="text-3xl font-bold text-center mb-8">{t('about.howItWorks.title')}</h2>
             <div className="space-y-6">
-              {[
-                "Take a clear photo of the affected plant leaf",
-                "Select your crop type from our extensive list",
-                "Get instant disease diagnosis and treatment recommendations",
-                "Apply the suggested treatment methods for best results"
-              ].map((step, index) => (
+              {t('about.howItWorks.steps').split(',').map((step, index) => (
                 <div
                   key={index}
                   className="flex items-start gap-4 animate-fade-in"
@@ -82,3 +80,4 @@ const About = () => {
 };
 
 export default About;
+

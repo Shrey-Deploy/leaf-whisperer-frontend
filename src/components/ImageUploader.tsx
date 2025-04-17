@@ -1,6 +1,6 @@
-
 import { useState, useRef, DragEvent, ChangeEvent } from "react";
-import { Upload, Image as ImageIcon, X } from "lucide-react";
+import { Upload, X } from "lucide-react";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface ImageUploaderProps {
   onImageChange: (file: File | null) => void;
@@ -10,6 +10,7 @@ const ImageUploader = ({ onImageChange }: ImageUploaderProps) => {
   const [dragActive, setDragActive] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { t } = useTranslations();
 
   const handleDrag = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -77,7 +78,7 @@ const ImageUploader = ({ onImageChange }: ImageUploaderProps) => {
   return (
     <div className="w-full">
       <label className="block text-sm font-medium text-gray-700 mb-2">
-        Upload leaf image
+        {t('diagnosis.uploadLabel')}
       </label>
       
       {!imagePreview ? (
@@ -87,13 +88,13 @@ const ImageUploader = ({ onImageChange }: ImageUploaderProps) => {
           onDragOver={handleDrag}
           onDragLeave={handleDrag}
           onDrop={handleDrop}
-          onClick={triggerFileInput}
+          onClick={() => inputRef.current?.click()}
         >
           <Upload className="h-12 w-12 text-plant-green mb-3" />
           <p className="text-center mb-2">
-            <span className="font-medium">Click to upload</span> or drag and drop
+            <span className="font-medium">{t('diagnosis.dropzoneText')}</span>
           </p>
-          <p className="text-sm text-gray-500">PNG, JPG or JPEG (max 10MB)</p>
+          <p className="text-sm text-gray-500">{t('diagnosis.fileTypes')}</p>
           <input
             ref={inputRef}
             type="file"
@@ -106,7 +107,13 @@ const ImageUploader = ({ onImageChange }: ImageUploaderProps) => {
         <div className="relative rounded-lg overflow-hidden border border-border">
           <img src={imagePreview} alt="Leaf preview" className="w-full h-64 object-contain" />
           <button
-            onClick={clearImage}
+            onClick={() => {
+              setImagePreview(null);
+              onImageChange(null);
+              if (inputRef.current) {
+                inputRef.current.value = '';
+              }
+            }}
             className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md hover:bg-gray-100"
             aria-label="Remove image"
           >
