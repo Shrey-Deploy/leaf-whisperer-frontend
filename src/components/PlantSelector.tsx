@@ -1,5 +1,6 @@
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTranslations } from "@/hooks/useTranslations";
 
 interface PlantSelectorProps {
   onPlantChange: (plantType: string) => void;
@@ -21,10 +22,12 @@ const PLANT_TYPES = [
 ];
 
 const PlantSelector = ({ onPlantChange, value }: PlantSelectorProps) => {
+  const { t } = useTranslations();
+  
   return (
     <div className="w-full">
       <label className="block text-sm font-medium text-gray-700 mb-2">
-        Select plant type
+        {t('diagnosis.selectPlant')}
       </label>
       <Select 
         value={value || undefined} 
@@ -39,7 +42,7 @@ const PlantSelector = ({ onPlantChange, value }: PlantSelectorProps) => {
         }}
       >
         <SelectTrigger className="w-full bg-white border-input">
-          <SelectValue placeholder="Select a plant type" />
+          <SelectValue placeholder={t('diagnosis.selectPlant')} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
